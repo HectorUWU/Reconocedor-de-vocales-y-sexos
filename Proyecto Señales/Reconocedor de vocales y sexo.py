@@ -62,8 +62,10 @@ def make_x_y(labels):
             data = np.setdiff1d(data,0)
             data = np.array(data[:32])
             fft_out = FFT(data)
-            mx=np.amax(fft_out)
-            x.append(mx)
+            fft_mag=np.absolute(fft_out)
+            mf=np.where(fft_mag==np.amax(fft_mag)) 
+            comp=fft_out[mf]
+            x.append(comp)
             y.append(label)
         i+=1
     return x,y
@@ -107,9 +109,11 @@ def make_prediction_svm(model,fname):
     data = np.setdiff1d(data,0)
     data = np.array(data[:32])
     fft_out = FFT(data)
-    mf=np.amax(fft_out) 
-    r= np.real(mf)
-    i = np.imag(mf)
+    fft_mag=np.absolute(fft_out)
+    mf=np.where(fft_mag==np.amax(fft_mag)) 
+    comp=fft_out[mf]
+    r= float(np.real(comp))
+    i = float(np.imag(comp))
     vec1,vec=[],[]
     vec1.append(r)
     vec1.append(i)
@@ -118,10 +122,12 @@ def make_prediction_svm(model,fname):
     data = np.setdiff1d(data,0)
     data = np.array(data[:32])
     fft_out = FFT(data)
-    mf=np.amax(fft_out) 
-    r= np.real(mf)
-    i = np.imag(mf)
+    fft_mag=np.absolute(fft_out)
+    mf=np.where(fft_mag==np.amax(fft_mag)) 
+    comp=fft_out[mf]
     vec1=[]
+    r= float(np.real(comp))
+    i = float(np.imag(comp))
     vec1.append(r)
     vec1.append(i)
     vec.append(vec1)
@@ -148,10 +154,10 @@ if __name__ == "__main__":
     i = np.imag(x)#obtiene las componenetes imaginarias
     X = make_X(r,i)
     modelV=make_model(X,y)#entrena el modelo para predecir vocales
-    print(make_prediction_svm(modelV,'speech2.wav'))
+    print(make_prediction_svm(modelV,'i.wav'))
     xs,ys=make_x_y(['H','M'])
     rs= np.real(xs)#obtiene las componenetes reales
-    iS = np.imag(xs)#obtiene las componenetes imaginarias
+    iS = np.imag(xs)#obtiene las componenetes imaginaria
     XS = make_X(rs,iS)
     modelSexo=make_model(XS,ys)#entrena el modelo para predecir sexos
-    print(make_prediction_svm(modelSexo,'speech2.wav'))
+    print(make_prediction_svm(modelSexo,'i.wav'))
